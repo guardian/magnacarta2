@@ -1,0 +1,28 @@
+{
+  "name": "interactive-magna-carta-2",
+  "version": "0.0.3",
+  "homepage": "git@github.com:seanclarkeguardian/magnacarta2.git",
+  "author": "Guardian Visuals",
+  "description": "Magna carta document browser",
+  "main": "src/boot.js",
+  "license": "Apache",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "skrollr": "~0.6.29"
+  },
+  "authors": [
+    "seanclarkeguardian <sean.clarke@guardian.co.uk>"
+  ],
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "skrollr"
+  ]
+}

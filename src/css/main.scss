@@ -1,0 +1,64 @@
+/**
+ * Project: Project name 
+ * File:    Main SCSS
+ */
+
+$guss-webfonts-base-url: '//pasteup.guim.co.uk/fonts/';
+
+@import 'bower_components/pasteup-palette/src/_palette';
+@import 'bower_components/guss-webfonts/src/_webfonts.scss';
+@import 'bower_components/guss-typography/_typography.scss';
+
+@import 'modules/sample';
+@include guss-webfonts();
+@include guss-typography-defaults;
+
+.guInteractive {
+    color: map-get($pasteup-palette, 'guardian-brand');
+}
+
+#rawtext {
+	background-image: url(http://interactive.guim.co.uk/2015/jun/magnacarta/img/background.jpg);
+	color: #49322a;
+	z-index: 98;
+}
+
+#lightbox {
+	padding-left: 20px;
+	display: none;
+	width: 100%;
+	/* background-image: url(@@assetPath@@/imgs/newbackground.jpg); */
+	background-color: white;
+	opacity: 80%;
+	color: #49322a;
+	z-index: 100;
+	top: 200px;
+	position: absolute;
+}
+
+#lightboxtext {
+	font-style: bold;
+}
+
+
+#manuscriptoverlay {
+
+	background-color: rgb(102, 102, 102);
+	opacity: 0.6;
+	cursor: pointer;
+	height: 100%;
+	width: 100%; 
+	display: none;
+	z-index:99;
+	position: absolute;
+	top: 0px
+}
+
+.chooser {
+	color: #49322a;
+}
+
+.selected {
+	color: black;
+}
+
