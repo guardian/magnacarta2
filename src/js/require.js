@@ -19,7 +19,8 @@ require.config({
     "Markdown.Converter": "../../bower_components/requirejs-plugins/lib/Markdown.Converter",
     text: "../../bower_components/text/text",
     reqwest: "../../bower_components/reqwest/reqwest",
-    jquery: "../../bower_components/jquery/dist/jquery"
+    jquery: "../../bower_components/jquery/dist/jquery",
+    skrollr: "../../bower_components/skrollr/src/skrollr"
   },
   packages: [
 

@@ -24,22 +24,44 @@ $guss-webfonts-base-url: '//pasteup.guim.co.uk/fonts/';
 }
 
 #lightbox {
+	padding-bottom: 60px;
+	padding-top: 10px;
 	padding-left: 20px;
 	display: none;
 	width: 100%;
 	/* background-image: url(@@assetPath@@/imgs/newbackground.jpg); */
 	background-color: white;
 	opacity: 80%;
-	color: #49322a;
+	/*	color: #49322a; */
 	z-index: 100;
 	top: 200px;
 	position: absolute;
 }
 
-#lightboxtext {
-	font-style: bold;
+#lightboxtitle {
+	font-weight: 900;
+	display: block;
+	padding: 4px;
+	float: left;
+	font-size: 18px;
 }
 
+
+#lightboxtext {
+	margin-top: 40px;
+	display: block;
+	padding: 4px;
+	font-style: bold;
+	max-width: 80%;
+}
+
+#commentary {
+	margin-top: 40px;
+	display: block;
+	padding: 4px;
+	font-style: italic;
+	max-width: 80%;
+}
 
 #manuscriptoverlay {
 
@@ -54,11 +76,56 @@ $guss-webfonts-base-url: '//pasteup.guim.co.uk/fonts/';
 	top: 0px
 }
 
-.chooser {
-	color: #49322a;
+#langtoggle {
+	display: inline-block;
+	margin-right: 200px;
+	float: right;
+	background-color: #ccc;
+	border-radius: 32px;
+	padding: 2px; 
 }
+
+.chooser {
+	color: black;
+	font-family: 'Guardian Egyptian Web';
+  	font-weight: 300;
+  	line-height: 20px;
+  	font-size: 16px;
+  	height: 100%;
+  	padding: 10px 10px;
+  	cursor: pointer;
+}
+
+#english {
+	border-radius: 16px 0px 0px 16px;
+	border: 1px;
+}
+
+#latin {
+	border-radius: 0px 16px 16px 0px;
+}
+
 
 .selected {
 	color: black;
+	background-color: white;
+	font-family: 'Guardian Egyptian Web';
+  	font-weight: 300;
+  	line-height: 20px;
+  	font-size: 16px;
+  	height: 100%;
+  	padding: 5px 10px 5px;
+  	border-radius: 8px;
+  	cursor: pointer;
+}
+
+#lightboxnav {
+	padding-top: 10px;
+	font-family: 'Guardian Sans Web';
+}
+
+#next {
+	float: right;
+	padding-right:200px;
 }
 
