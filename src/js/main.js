@@ -1,18 +1,12 @@
 define([
     'jquery',
     'reqwest',
-    'jquery.waypoints.min.js',
-    'json!data/sampleData.json',
     'text!templates/appTemplate.html',
-    'sticky.js',
     'jquery.ba-throttle-debounce.min.js'
 ], function(
     $,
     reqwest,
-    waypoints,
-    sampleData,
     templateHTML,
-    sticky,
     debounce
 ) {
    'use strict';
@@ -73,15 +67,17 @@ define([
                   };
                 }
 
-                $(window).scroll($.throttle(700, checkscroll));
+                $(window).resize(checkscroll);
+
+                $(window).scroll($.throttle(200, checkscroll));
                     //$(window).scroll(checkscroll);
 
                 function checkscroll() 
                      {
                       var viewportOffset = getViewportOffset($("#manuscript"));
-                      $("#log").text("scrollTop: " + viewportOffset.scrollTop + ", top: " + viewportOffset.top + "nearest passage" + passages[0].clause);
-                        var currentquarter = 1;
-                        var manuscriptscrollpercent = Math.abs(viewportOffset.top) / $('#manuscript').height();
+                      $("#log").text("scrollTop: " + viewportOffset.scrollTop + ", top: " + viewportOffset.top + "textpos: " + textpos);
+                        //var currentquarter = 1;
+                       var manuscriptscrollpercent = Math.abs(viewportOffset.top) / $('#manuscript').height();
                         var manuscriptscroll = (viewportOffset.top > 0) ? 0 : manuscriptscrollpercent;
                         /*if (manuscriptscroll > .1 && manuscriptscroll < .25) {currentquarter=2}
                             else if (manuscriptscroll >.25 && manuscriptscroll <.5) {currentquarter = 3}
@@ -96,7 +92,11 @@ define([
                 function loadtext (){
                     
                     //reset anchor location for lightbox
-                    textpos = (currentpassage.ofy * $('#manuscript').height()) + $('#manuscript').offset().top; 
+                    //console.log(textpos);
+                    console.log($('#manuscript').height());
+                    console.log($('#manuscript').offset().top);
+
+                    textpos = (currentpassage.ofy * $('#manuscript').height()); 
                     lightboxpos = textpos + 150;
 
                     //add and style lightbox elements

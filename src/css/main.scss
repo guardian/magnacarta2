@@ -17,28 +17,15 @@ $guss-webfonts-base-url: '//pasteup.guim.co.uk/fonts/';
     color: map-get($pasteup-palette, 'guardian-brand');
 }
 
-#rawtext {
-	background-image: url(http://interactive.guim.co.uk/2015/jun/magnacarta/img/background.jpg);
-	color: #49322a;
-	z-index: 98;
-}
-
 #lightbox {
 	padding-top: 10px;
 	padding-left: 20px;
+	padding-bottom: 10px;
 	display: block;
-	width: 100%;
-	/* background-image: url(@@assetPath@@/imgs/newbackground.jpg); */
-	background-color: white;
+	width: 100%;	background-color: white;
 	opacity: 0.95;
-	/*	color: #49322a; */
 	z-index: 100;
 	position: absolute;
-	/* 
-	>> bottom-locked version
-	bottom: 0;
-	position: fixed;
-	*/
 }
 
 #lightboxtitle {
@@ -51,9 +38,8 @@ $guss-webfonts-base-url: '//pasteup.guim.co.uk/fonts/';
 
 #log { position: fixed; left: 0; top: 0; font: medium monospace; background-color: #EEE8AA; }
 
-.basement {
-  position:fixed;
-  bottom: -150;
+#playground {
+	margin-bottom: 450px;
 }
 
 #lightboxtext {
@@ -62,7 +48,6 @@ $guss-webfonts-base-url: '//pasteup.guim.co.uk/fonts/';
 	padding: 4px;
 	font-style: bold;
 	font-size: 14px;
-	max-width: 80%;
 }
 
 #commentary {
@@ -78,7 +63,7 @@ $guss-webfonts-base-url: '//pasteup.guim.co.uk/fonts/';
 	background-color: rgb(102, 102, 102);
 	opacity: 0.1;
 	cursor: pointer;
-	height: 400%;
+	height: 100%;
 	width: 100%; 
 	display: none;
 	z-index:99;
