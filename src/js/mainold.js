@@ -4,16 +4,14 @@ define([
     'jquery.waypoints.min.js',
     'json!data/sampleData.json',
     'text!templates/appTemplate.html',
-    'sticky.js',
-    'jquery.ba-throttle-debounce.min.js'
+    'sticky.js'
 ], function(
     $,
     reqwest,
     waypoints,
     sampleData,
     templateHTML,
-    sticky,
-    debounce
+    sticky
 ) {
    'use strict';
 
@@ -21,19 +19,24 @@ define([
 
         var passages =[];
         var baseurl = "http://interactive.guim.co.uk/2015/jun/magnacarta/";
-        var langselection = "english";
+        var langselection = "latin";
         var closest = 0;
         var thingtoload = "";
+        var closest_dist = null;
         var msperc = 0;
         var clickevent = 0;
-        var textpos = $('#manuscript').offset() + 150;
+
+        
+
+
+
         // DOM template example
         el.innerHTML = templateHTML;
 
         // Load remote JSON data
 
         function logResponse(resp) {
-
+        //console.log(resp);
         passages = resp.sheets.Sheet2;
         }
 
@@ -42,7 +45,7 @@ define([
         }
 
         function afterRequest(resp) {
-      
+        //console.log('Finished', resp);
         }
         var jsonkey = '1CmhjsI2XrssXhn2PwI8TTN056hmpw_nrG7A2cqKn7u4';
         var jsonurl = 'http://interactive.guim.co.uk/spreadsheetdata/'+jsonkey+'.json';
@@ -59,57 +62,49 @@ define([
 
         //start fiddling
 
-                 function getViewportOffset($e) {
-                    var $window = $(window),
-                    scrollTop = $window.scrollTop(),
-                    offset = $e.offset();
-                     return {
-                    scrollTop: scrollTop,
-                    top: offset.top - scrollTop
-                  };
-                }
-
-                    $(window).scroll($.throttle(700, checkscroll));
-                    //$(window).scroll(checkscroll);
-
-                    function checkscroll() 
-                     {
-                      var viewportOffset = getViewportOffset($("#manuscript"));
-                      $("#log").text("scrollTop: " + viewportOffset.scrollTop + ", top: " + viewportOffset.top + "nearest passage" + passages[closest].clause);
-                        var currentquarter = 1;
-                        var manuscriptscrollpercent = Math.abs(viewportOffset.top) / $('#manuscript').height();
-                        var manuscriptscroll = (viewportOffset.top > 0) ? 0 : manuscriptscrollpercent;
-                        if (manuscriptscroll > .1 && manuscriptscroll < .25) {currentquarter=2}
-                            else if (manuscriptscroll >.25 && manuscriptscroll <.5) {currentquarter = 3}
-                            else if (manuscriptscroll >.5) {currentquarter = 4}
-                            else {currentquarter = 1};
-                        getnearest(manuscriptscroll);
-//                        console.log("dist: " + dist + "closest_dist: " + closest_dist);
-                        console.log(passages[closest].clause);
-                        changelanguage();
-                        loadtext();
-                        };
+                var waypoint = new Waypoint({
+                element: $('#lightbox'),
+                handler: function sticktobottom (direction) {
+                $('#lightbox').addClass('basement');
+                alert('100%')
+                },
+                offset:'100%'
+                });
+                
 
                 function loadtext (){
-                    
+                    var imageheight = $('#manuscript').height();
+                    //console.log(imageheight);
+
                     $('#lightboxtext').text(thingtoload);
                     $('#lightboxtitle').text(passages[closest].clause);
+                    var itemY = (imageheight * passages[closest].ofy);
+                    console.log(itemY);
                     $('#lightbox').css({
                         display: 'block',
-                        top: textpos
+                        //top: (itemY + 40)
                         });
+
                     $('#manuscriptoverlay').css({
                         display: 'block'
                      });
-                    //$('#commentary').text(passages[closest].commentary);                  
+
+                    if (passages[closest].commentary.length > 0) {
+                        $('#commentary').text(passages[closest].commentary);
+                    }
                 };
 
-                function getnearest (anchor) {
-                    var sortedObjects = passages.sort(function(a,b) { 
-                        return Math.abs(anchor - a.ofy) - Math.abs(anchor - b.ofy); 
-                    })
-                    console.log(sortedObjects[0].clause);
-                    textpos = (passages[0].ofy * $('#manuscript').height) + $('#manuscript').offset(); 
+                function getnearest () {
+                    jQuery.each(passages, function(passage, object) {
+                        var dist = Math.abs(msperc - object.ofy);
+                        if (closest === null || dist < closest_dist) {
+                                closest = passage;
+                                closest_dist = dist;
+                                } else {
+                                //console.log(passages[closest]);
+                                    return passages[closest];   
+                                }
+                      })                             
                 };
 
 
@@ -127,7 +122,10 @@ define([
                 };}
 
 
-
+                /*var clauseEl = $('<div></div>').html(clause14);
+                var chunk = clauseEl.find(correctchunk);
+                $('#rawtext').append(chunk);
+                */
 
                 $('#manuscript').click(function(e) {
                     clickevent = e;
@@ -137,7 +135,11 @@ define([
                         posY = e.pageY - rawposY;
                     var rect = this.getBoundingClientRect();
                     msperc = posY / rect.height;
-                    getnearest(msperc);
+                    /*console.log(posY);
+                    console.log(rect.height);
+                    console.log(msperc);
+                    */
+                    getnearest();
                     changelanguage();
                     loadtext();
                 });
@@ -151,6 +153,8 @@ define([
                     });
                     $('#lightboxtext').html("");
                     clickevent = 0;
+                    //posY = 0;
+                    //rawposY = 0;
                     closest = null;
                 });
 

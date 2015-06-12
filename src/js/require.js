@@ -20,7 +20,8 @@ require.config({
     text: "../../bower_components/text/text",
     reqwest: "../../bower_components/reqwest/reqwest",
     jquery: "../../bower_components/jquery/dist/jquery",
-    skrollr: "../../bower_components/skrollr/src/skrollr"
+    skrollr: "../../bower_components/skrollr/src/skrollr",
+    waypoints: "../../bower_components/waypoints/lib/noframework.waypoints.min"
   },
   packages: [
 

@@ -27,15 +27,15 @@ $guss-webfonts-base-url: '//pasteup.guim.co.uk/fonts/';
 	padding-bottom: 60px;
 	padding-top: 10px;
 	padding-left: 20px;
-	display: none;
+	display: block;
 	width: 100%;
 	/* background-image: url(@@assetPath@@/imgs/newbackground.jpg); */
 	background-color: white;
-	opacity: 80%;
+	opacity: 0.95;
 	/*	color: #49322a; */
 	z-index: 100;
-	top: 200px;
-	position: absolute;
+	bottom: 0;
+	position: fixed;
 }
 
 #lightboxtitle {
@@ -46,6 +46,12 @@ $guss-webfonts-base-url: '//pasteup.guim.co.uk/fonts/';
 	font-size: 18px;
 }
 
+#log { position: fixed; left: 0; top: 0; font: medium monospace; background-color: #EEE8AA; }
+
+.basement {
+  position:fixed;
+  bottom: -150;
+}
 
 #lightboxtext {
 	margin-top: 40px;
@@ -66,9 +72,9 @@ $guss-webfonts-base-url: '//pasteup.guim.co.uk/fonts/';
 #manuscriptoverlay {
 
 	background-color: rgb(102, 102, 102);
-	opacity: 0.6;
+	opacity: 0.1;
 	cursor: pointer;
-	height: 100%;
+	height: 400%;
 	width: 100%; 
 	display: none;
 	z-index:99;

@@ -24,5 +24,8 @@
   ],
   "keywords": [
     "skrollr"
-  ]
+  ],
+  "resolutions": {
+    "guss-webfonts": "~4.0.1"
+  }
 }

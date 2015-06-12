@@ -24,9 +24,10 @@ define([
         var langselection = "english";
         var closest = 0;
         var thingtoload = "";
+        var diff =10000;
+        var smallestdiff = 3000;
         var msperc = 0;
         var clickevent = 0;
-        var textpos = $('#manuscript').offset() + 150;
         // DOM template example
         el.innerHTML = templateHTML;
 
@@ -96,7 +97,6 @@ define([
                     $('#lightboxtitle').text(passages[closest].clause);
                     $('#lightbox').css({
                         display: 'block',
-                        top: textpos
                         });
                     $('#manuscriptoverlay').css({
                         display: 'block'
@@ -105,11 +105,24 @@ define([
                 };
 
                 function getnearest (anchor) {
+                        console.log("passed value for anchor" + anchor);
                     var sortedObjects = passages.sort(function(a,b) { 
                         return Math.abs(anchor - a.ofy) - Math.abs(anchor - b.ofy); 
                     })
                     console.log(sortedObjects[0].clause);
-                    textpos = (passages[0].ofy * $('#manuscript').height) + $('#manuscript').offset(); 
+                    // jQuery.each(passages, function(passage, object) {
+                    //     var diff = Math.abs(anchor - object.ofy);
+                    //     //console.log(object.clause + " anchor - " + anchor + " ofy: " + object.ofy + " = " + smallestdiff);
+                    //     //console.log("closest: " + closest);
+                    //     if (diff < smallestdiff) {
+                    //         console.log("diff: " + diff + "smallestdiff: " + smallestdiff);
+                    //             closest = passage;
+                    //             smallestdiff = diff;
+                    //             } else {
+                    //                 diff = 3000;
+                    //                 return passages[closest];   
+                    //             }
+                    //   })                             
                 };
 
 
