@@ -20,13 +20,13 @@ define([
     function init(el) {
 
         var passages =[];
+        var currentpassage;
         var baseurl = "http://interactive.guim.co.uk/2015/jun/magnacarta/";
         var langselection = "english";
         var closest = 0;
         var thingtoload = "";
         var msperc = 0;
         var clickevent = 0;
-        var textpos = $('#manuscript').offset() + 150;
         // DOM template example
         el.innerHTML = templateHTML;
 
@@ -58,6 +58,10 @@ define([
     
 
         //start fiddling
+                //vars that need the content
+                var textpos = $('#manuscript').offset().top + 150;
+                var lightboxpos = textpos + 150;
+
 
                  function getViewportOffset($e) {
                     var $window = $(window),
@@ -69,60 +73,97 @@ define([
                   };
                 }
 
-                    $(window).scroll($.throttle(700, checkscroll));
+                $(window).scroll($.throttle(700, checkscroll));
                     //$(window).scroll(checkscroll);
 
-                    function checkscroll() 
+                function checkscroll() 
                      {
                       var viewportOffset = getViewportOffset($("#manuscript"));
-                      $("#log").text("scrollTop: " + viewportOffset.scrollTop + ", top: " + viewportOffset.top + "nearest passage" + passages[closest].clause);
+                      $("#log").text("scrollTop: " + viewportOffset.scrollTop + ", top: " + viewportOffset.top + "nearest passage" + passages[0].clause);
                         var currentquarter = 1;
                         var manuscriptscrollpercent = Math.abs(viewportOffset.top) / $('#manuscript').height();
                         var manuscriptscroll = (viewportOffset.top > 0) ? 0 : manuscriptscrollpercent;
-                        if (manuscriptscroll > .1 && manuscriptscroll < .25) {currentquarter=2}
+                        /*if (manuscriptscroll > .1 && manuscriptscroll < .25) {currentquarter=2}
                             else if (manuscriptscroll >.25 && manuscriptscroll <.5) {currentquarter = 3}
                             else if (manuscriptscroll >.5) {currentquarter = 4}
-                            else {currentquarter = 1};
+                            else {currentquarter = 1};*/
+                        //now do stuff
                         getnearest(manuscriptscroll);
-//                        console.log("dist: " + dist + "closest_dist: " + closest_dist);
-                        console.log(passages[closest].clause);
                         changelanguage();
                         loadtext();
                         };
 
                 function loadtext (){
                     
+                    //reset anchor location for lightbox
+                    textpos = (currentpassage.ofy * $('#manuscript').height()) + $('#manuscript').offset().top; 
+                    lightboxpos = textpos + 150;
+
+                    //add and style lightbox elements
+                    $('#lightboxtext').css({
+                        'background-color': 'white'
+                    });
+                    $('#lightboxtext' ).unbind( "click" );
                     $('#lightboxtext').text(thingtoload);
-                    $('#lightboxtitle').text(passages[closest].clause);
+                    $('#lightboxtitle').text(currentpassage.clause);
                     $('#lightbox').css({
                         display: 'block',
-                        top: textpos
+                        top: lightboxpos +'px'
                         });
+                    $('#lightboxtext').css({
+                        'background-color': 'none'
+                    });
                     $('#manuscriptoverlay').css({
                         display: 'block'
                      });
-                    //$('#commentary').text(passages[closest].commentary);                  
+                    
+                    //check for pointless next previous buttons
+                    if (currentpassage.passage == 62) {
+                        $('#next').css({display: 'none'});
+                    } else if (currentpassage.passage == 0) {
+                        $('#prev').css({display: 'none'});
+                    } else {
+                        $('#prev').css({display: 'block'});
+                        $('#next').css({display: 'block'});
+                    };
+
+                    //check for commentary
+                    if (currentpassage.commentary.length > 0) {
+                        addCommentary();
+                    };
+
+                };
+
+                function addCommentary() {
+                    $('#lightboxtext').css({
+                        'background-color': 'yellow'
+                    });
+                    $('#lightboxtext').click(function(e) {
+                        e.stopPropagation();
+                        $('#lightboxtext').text(currentpassage.commentary);
+                    });
+                      
                 };
 
                 function getnearest (anchor) {
                     var sortedObjects = passages.sort(function(a,b) { 
                         return Math.abs(anchor - a.ofy) - Math.abs(anchor - b.ofy); 
                     })
-                    console.log(sortedObjects[0].clause);
-                    textpos = (passages[0].ofy * $('#manuscript').height) + $('#manuscript').offset(); 
+                    currentpassage = passages[0];
+                    return currentpassage;
                 };
 
 
                 function changelanguage () {
                     switch (langselection){
                         case "latin": 
-                            thingtoload = passages[closest].latin;
+                            thingtoload = currentpassage.latin;
                             break;
                         case "english":
-                            thingtoload = passages[closest].english;
+                            thingtoload = currentpassage.english;
                             break;
                         case "commentary":
-                            thingtoload = passages[closest].commentary;
+                            thingtoload = currentpassage.commentary;
                             break;
                 };}
 
@@ -176,11 +217,19 @@ define([
                  $('.nav').click(function(e) {
                     e.stopPropagation();
                     console.log(this.id);
-                    if (this.id = 'next') {
-                        passages[closest++];
-                    } else {
-                        passages[closest--];
-                    }
+                    var realindex = currentpassage.passage;
+                    var propersort = passages.sort(function(a,b) { 
+                        return a.passage - b.passage; 
+                    });
+                    if (this.id == 'next') {
+                        var newindex = realindex+1;
+                    } else if (this.id == 'prev') {
+                        var newindex = realindex-1;
+                    };
+                    //probably want to change this
+                    console.log(newindex);
+                    currentpassage = passages[newindex];
+                    console.log(currentpassage.clause)
                     changelanguage();
                     loadtext();
                 });
