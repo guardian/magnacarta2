@@ -12,32 +12,14 @@ define([
    'use strict';
 
     function init(el) {
-
-        var passages =[];
-        var currentpassage;
-        var baseurl = "http://interactive.guim.co.uk/2015/jun/magnacarta/";
-        var langselection = "english";
-        var closest = 0;
-        var thingtoload = "";
-        var msperc = 0;
-        var clickevent = 0;
+        var passages = [];
         // DOM template example
         el.innerHTML = templateHTML;
-
-        // Load remote JSON data
-
-        function logResponse(resp) {
-
-        passages = resp.sheets.Sheet2;
-        }
 
         function handleRequestError(err, msg) {
         console.error('Failed: ', err, msg);
         }
-
-        function afterRequest(resp) {
-      
-        }
+        
         var jsonkey = '1CmhjsI2XrssXhn2PwI8TTN056hmpw_nrG7A2cqKn7u4';
         var jsonurl = 'http://interactive.guim.co.uk/spreadsheetdata/'+jsonkey+'.json';
 
@@ -46,18 +28,30 @@ define([
             type: 'json',
             crossOrigin: true
         })
-        .then(logResponse)
         .fail(handleRequestError)
         .always(afterRequest);
     
-
+        function afterRequest(resp){
         //start fiddling
-                //vars that need the content
-                var textpos = $('#manuscript').offset().top + 150;
-                var lightboxpos = textpos + 150;
+            passages = resp.sheets.Sheet2;
+            console.log(passages);
+            var currentpassage = passages[0];
+            var langselection = "english";
+            var closest = 0;
+            var thingtoload = "";
+            var msperc = 0;
+            var clickevent = 0;
+            var textpos = $('#manuscript').offset().top + 150;
+            var lightboxpos = textpos + 150;
+            var mobile = false;
+            console.log($(window).width());
 
+            if ($(window).width() < 400) {
+                mobile = true;
+                console.log(mobile)
+            };
 
-                 function getViewportOffset($e) {
+            function getViewportOffset($e) {
                     var $window = $(window),
                     scrollTop = $window.scrollTop(),
                     offset = $e.offset();
@@ -67,22 +61,26 @@ define([
                   };
                 }
 
+                if (mobile) {
+                    //don't check for scroll
+                    changelanguage();
+                    loadtext();
+                   
+                } else {
+
                 $(window).resize(checkscroll);
 
                 $(window).scroll($.throttle(200, checkscroll));
                     //$(window).scroll(checkscroll);
+                }
 
                 function checkscroll() 
                      {
                       var viewportOffset = getViewportOffset($("#manuscript"));
                       $("#log").text("scrollTop: " + viewportOffset.scrollTop + ", top: " + viewportOffset.top + "textpos: " + textpos);
-                        //var currentquarter = 1;
-                       var manuscriptscrollpercent = Math.abs(viewportOffset.top) / $('#manuscript').height();
+                        var manuscriptscrollpercent = Math.abs(viewportOffset.top) / $('#manuscript').height();
                         var manuscriptscroll = (viewportOffset.top > 0) ? 0 : manuscriptscrollpercent;
-                        /*if (manuscriptscroll > .1 && manuscriptscroll < .25) {currentquarter=2}
-                            else if (manuscriptscroll >.25 && manuscriptscroll <.5) {currentquarter = 3}
-                            else if (manuscriptscroll >.5) {currentquarter = 4}
-                            else {currentquarter = 1};*/
+                       
                         //now do stuff
                         getnearest(manuscriptscroll);
                         changelanguage();
@@ -90,14 +88,13 @@ define([
                         };
 
                 function loadtext (){
-                    
-                    //reset anchor location for lightbox
-                    //console.log(textpos);
-                    console.log($('#manuscript').height());
-                    console.log($('#manuscript').offset().top);
 
+                    $('#commentary, #commentary-toggle-on, #commentary-toggle-off').css('display','none');
+
+                   
                     textpos = (currentpassage.ofy * $('#manuscript').height()); 
-                    lightboxpos = textpos + 150;
+                    lightboxpos = textpos + 75;
+                    
 
                     //add and style lightbox elements
                     $('#lightboxtext').css({
@@ -106,10 +103,23 @@ define([
                     $('#lightboxtext' ).unbind( "click" );
                     $('#lightboxtext').text(thingtoload);
                     $('#lightboxtitle').text(currentpassage.clause);
+                    
+                    // desktop
                     $('#lightbox').css({
                         display: 'block',
                         top: lightboxpos +'px'
                         });
+
+                    $('#lightboxtext').css('display','block')
+
+                    if (currentpassage.passage > 57) {
+                        $('#lightbox').removeClass('lastfew');
+                        $('#lightbox').addClass('lastfew');
+                    }else{
+                        $('#lightbox').removeClass('lastfew');
+                    }
+
+
                     $('#lightboxtext').css({
                         'background-color': 'none'
                     });
@@ -118,32 +128,95 @@ define([
                      });
                     
                     //check for pointless next previous buttons
-                    if (currentpassage.passage == 62) {
+                    if (currentpassage.passage == 57) {
                         $('#next').css({display: 'none'});
                     } else if (currentpassage.passage == 0) {
                         $('#prev').css({display: 'none'});
                     } else {
-                        $('#prev').css({display: 'block'});
-                        $('#next').css({display: 'block'});
+                        $('#prev').css({display: 'inline-block'});
+                        $('#next').css({display: 'inline-block'});
                     };
 
                     //check for commentary
                     if (currentpassage.commentary.length > 0) {
                         addCommentary();
+                    } else {
+                        $('#commentary').css({
+                            display: 'none',
+                        });
                     };
 
+                   
                 };
 
+
+
+
+
                 function addCommentary() {
+                    $('#commentary').text(currentpassage.commentary);
                     $('#lightboxtext').css({
-                        'background-color': 'yellow'
+                        'background-color': '#fff200'
                     });
-                    $('#lightboxtext').click(function(e) {
+                    $('#commentary-toggle-on').css('display','block');
+
+                    $('#lightboxtext, #commentary-toggle-on').click(function(e) {
                         e.stopPropagation();
-                        $('#lightboxtext').text(currentpassage.commentary);
+                        $('#lightboxtext').css({
+                            display: 'none',
+                        }); 
+                        $('#commentary').css({
+                            display: 'block',
+                        });
+                        $('#commentary-toggle-on').css('display','none');
+                        $('#commentary-toggle-off').css('display','block');
+
                     });
+
+                    $('#commentary, #commentary-toggle-off').click(function(e) {
+                        e.stopPropagation();
+                       $('#lightboxtext').css({
+                            display: 'block',
+                        });
+
+                        $('#commentary').css({
+                            display: 'none',
+                        });
+                        $('#commentary-toggle-off').css('display','none');
+                        $('#commentary-toggle-on').css('display','block');
                       
+                      });
+
+
+                    // $('#commentary-toggle').click(function(e) {
+                    //     e.stopPropagation();
+                    //     $('#lightboxtext').css({
+                    //         display: 'none',
+                    //     }); 
+                    //     $('#commentary').css({
+                    //         display: 'block',
+                    //     });
+                    //     $('#commentary-toggle-off').text('Hide commentary');
+
+                    // });
+
+                    // $('#commentary-toggle-off').click(function(e) {
+                    //     e.stopPropagation();
+                    //    $('#lightboxtext').css({
+                    //         display: 'block',
+                    //     });
+                    //     $('#commentary').css({
+                    //         display: 'none',
+                    //     });
+                    //     $('#commentary-toggle-on').text('Show commentary');
+                      
+                    //   });
+
+
                 };
+
+
+
 
                 function getnearest (anchor) {
                     var sortedObjects = passages.sort(function(a,b) { 
@@ -162,48 +235,7 @@ define([
                         case "english":
                             thingtoload = currentpassage.english;
                             break;
-                        case "commentary":
-                            thingtoload = currentpassage.commentary;
-                            break;
                 };}
-
-
-
-
-                $('#manuscript').click(function(e) {
-                    clickevent = e;
-                    var rawposX = $(this).offset().left,
-                        rawposY = $(this).offset().top;
-                    var posX = e.pageX - rawposX,
-                        posY = e.pageY - rawposY;
-                    var rect = this.getBoundingClientRect();
-                    msperc = posY / rect.height;
-                    getnearest(msperc);
-                    changelanguage();
-                    loadtext();
-                });
- 
-                $('#manuscriptoverlay').click(function() {
-                    $('#manuscriptoverlay').css({
-                        display: 'none'
-                    });
-                    $('#lightbox').css({
-                        display: 'none'
-                    });
-                    $('#lightboxtext').html("");
-                    clickevent = 0;
-                    closest = null;
-                });
-
-
-                $('#lightbox').click(function() {
-                    $('#manuscriptoverlay').css({
-                        display: 'none'
-                    });
-                    $('#lightbox').css({
-                        display: 'none'
-                    });
-                });
 
                 $('.chooser').click(function(e) {
                     e.stopPropagation();
@@ -234,7 +266,7 @@ define([
                     loadtext();
                 });
 
-
+            }
     }
 
     return {
