@@ -44,11 +44,9 @@ define([
             var textpos = $('#manuscript').offset().top + 150;
             var lightboxpos = textpos + 150;
             var mobile = false;
-            console.log($(window).width());
-
+            
             if ($(window).width() < 400) {
                 mobile = true;
-                console.log(mobile)
             };
 
             function getViewportOffset($e) {
@@ -93,7 +91,7 @@ define([
 
                    
                     textpos = (currentpassage.ofy * $('#manuscript').height()); 
-                    lightboxpos = textpos + 75;
+                    lightboxpos = textpos + 150;
                     
 
                     //add and style lightbox elements
@@ -128,7 +126,7 @@ define([
                      });
                     
                     //check for pointless next previous buttons
-                    if (currentpassage.passage == 57) {
+                    if (currentpassage.passage == 63) {
                         $('#next').css({display: 'none'});
                     } else if (currentpassage.passage == 0) {
                         $('#prev').css({display: 'none'});
