@@ -41,8 +41,8 @@ define([
             var thingtoload = "";
             var msperc = 0;
             var clickevent = 0;
-            var textpos = $('#manuscript').offset().top + 150;
-            var lightboxpos = textpos + 150;
+            var textpos = $('#manuscript').offset().top + 120;
+            var lightboxpos = textpos + 110;
             var mobile = false;
             
             if ($(window).width() < 400) {
@@ -55,7 +55,7 @@ define([
                     offset = $e.offset();
                      return {
                     scrollTop: scrollTop,
-                    top: offset.top - scrollTop
+                    top: offset.top - scrollTop - 40
                   };
                 }
 
@@ -76,6 +76,7 @@ define([
                      {
                       var viewportOffset = getViewportOffset($("#manuscript"));
                       $("#log").text("scrollTop: " + viewportOffset.scrollTop + ", top: " + viewportOffset.top + "textpos: " + textpos);
+                      
                         var manuscriptscrollpercent = Math.abs(viewportOffset.top) / $('#manuscript').height();
                         var manuscriptscroll = (viewportOffset.top > 0) ? 0 : manuscriptscrollpercent;
                        
@@ -91,7 +92,7 @@ define([
 
                    
                     textpos = (currentpassage.ofy * $('#manuscript').height()); 
-                    lightboxpos = textpos + 150;
+                    lightboxpos = textpos + 100;
                     
 
                     //add and style lightbox elements
